@@ -1,0 +1,56 @@
+version: "3.6"
+services:
+  web:
+    container_name: appShopee
+    build:
+      context: .
+      dockerfile: ./app/Dockerfile
+    command: pm2-docker start app.js --name "shopeeApp"
+    environment:
+      - NODE_ENV=production
+    links:
+      - "mysql:mysql"
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - 1212:1212
+    volumes:
+      - .:/app
+    networks:
+      shopee_network:
+        ipv4_address: 172.18.1.5
+  nginx:
+    container_name: nginxShopee
+    image: nginx:1.14.0
+    links:
+      - "web:web"
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d/
+    restart: always
+    networks:
+      shopee_network:
+        ipv4_address: 172.18.1.2
+  mysql:
+    container_name: mysqlShopee
+    image: mariadb
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: shopee
+    volumes:
+      - ./mysql:/root/
+      - ./mysql/data:/var/lib/mysql/
+    networks:
+      shopee_network:
+        ipv4_address: 172.18.1.3
+networks:
+  shopee_network:
+    ipam:
+        config:
+            - subnet: 172.18.0.0/16
