@@ -4,7 +4,6 @@ Docker for Shopee App
 [![Code Style](https://img.shields.io/badge/code%20style-standard-green.svg)](https://github.com/feross/standard)
 
 
-[Installation](#installation) |
 [Deployment Setup](#deployment-setup) |
 [License](#license)
 
